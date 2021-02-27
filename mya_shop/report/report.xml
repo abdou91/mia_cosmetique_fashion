@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <report 
+            string="Demande d'approvisionnement" 
+            id="mya_report_demande_appro" 
+            model="demande.appro" 
+            report_type="qweb-pdf"
+            menu="False"
+            name="mya_shop.report_demande_appro" 
+            file="mya_shop.report_demande_appro"
+        />
+
+        <report 
+            string="Convention et fiche de traitement" 
+            id="mya_report_convention_traitement" 
+            model="prestation" 
+            report_type="qweb-pdf"
+            menu="False"
+            name="mya_shop.report_convention_traitement" 
+            file="mya_shop.report_convention_traitement"
+        />
+</odoo>

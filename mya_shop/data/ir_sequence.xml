@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="seq_demande_appro_ordre" model="ir.sequence">
+            <field name="name">NumÃ©ro d'ordre demande appro</field>
+            <field name="code">demande.appro</field>
+            <field name="prefix"></field>
+            <field name="padding">4</field>
+        </record>
+
+    </data>
+</odoo>

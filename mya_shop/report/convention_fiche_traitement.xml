@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="mya_shop.report_convention_traitement_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                
+                <h2 style="text-align:center;">CONVENTION ET FICHE DE TRAITEMENT</h2>
+                <br/>
+                <div class="oe_structure">
+                    <div class="row">
+                        <div class="col-xs-4 pull-left">
+                            <strong>Numéro: </strong><span t-esc="o.numero_convention"/>
+                        </div>
+                        <div class="col-xs-4 pull-right">
+                            <strong>DATE: </strong><span t-field="o.date_convention" t-field-options='{"format": "dd/MM/yyyy"}'/>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td class="text-left">
+                                <strong>NOM</strong>
+                            </td>
+                            <td class="text-left">
+                                <span t-esc="o.client.name.split(' ')[-1]"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <strong>PRENOM</strong>
+                            </td>
+                            <td class="text-left">
+                                <span t-esc="' '.join(o.client.name.split(' ')[:-1])"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <strong>AGE</strong>
+                            </td>
+                            <td class="text-left">
+                                <span t-esc="o.client.age"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <strong>ADRESSE</strong>
+                            </td>
+                            <td class="text-left">
+                                <span t-esc="o.client.street"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="text-left">
+                                <strong>TELEPHONE</strong>
+                            </td>
+                            <td class="text-left">
+                                <span t-esc="o.client.phone"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <strong>MALADIES A SIGNALER</strong>
+                            </td>
+                            <td class="text-left">
+                                <span t-esc="o.maladies_a_signales"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <strong>NOMBRE DE ZONE A TRAITER</strong>
+                            </td>
+                            <td class="text-left">
+                                <span t-esc="o.nombre_zones"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <strong>FORFAIT</strong>
+                            </td>
+                            <td class="text-left">
+                                <span t-field="o.forfait"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <strong>REMARQUES OU COMMENTAIRES</strong>
+                            </td>
+                            <td class="text-left">
+                                <span t-esc="o.remarques"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br/><br/><br/>
+                <p><strong>Le <span t-esc="o.product.name.lower()"/> par laser est à partir de 60.000F FCA par zone et par séance, les résultats sont progressifs. Le client paie avant chaque séance non remboursable. Les résultats définitifs dépendent du type de peaux et du respect strict du traitement. Elles sont généralement minimum entre 3 et 7seances.</strong></p>
+                <p><strong>Il est formellement interdit de mettre de l’eau sur la partie traitée par laser entre 3 et 7jours après le traitement , et d’utiliser un produit contenant de l’hydroquinone pendant toute la durée du traitement.</strong></p>
+                <p><strong>Pour les peaux sensibles, des rougeurs, démangeaisons ou quelques taches sont notées après le traitement mais elles disparaissent après.</strong></p>
+                <p><strong>Les séances seront espacées entre 3 semaines et 2 mois.</strong></p>
+                <p><strong>La consultation est à 5000F.</strong></p>
+
+                <div class="row">
+                    <div class="col-xs-4 pull-left"><strong>La Direction</strong></div>
+                    <div class="col-xs-4 pull-right"><strong>Le Client</strong></div>
+                </div>
+            </div> 
+        </t>
+    </template>
+
+    <template id="report_convention_traitement">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="mya_shop.report_convention_traitement_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>
+    

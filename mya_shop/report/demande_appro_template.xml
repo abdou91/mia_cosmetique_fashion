@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="mya_shop.report_demande_appro_document">
+        <t t-call="web.external_layout">
+
+            <!--div class="row">
+                <div class="col-xs-4 pull-left">
+                    <strong>Numéro demande: </strong><span t-esc="o.numero_demande"/>
+                </div>
+                <div class="col-xs-4 pull-right">
+                    <strong>DATE: </strong><span t-field="o.date_demande" t-field-options='{"format": "dd/MM/yyyy"}'/>
+                </div>
+            </div-->
+            <div class="page">
+                <h2 style="text-align:center;">DEMANDE D'APPROVISIONNEMENT BOUTIQUE</h2>
+                <div class="oe_structure" />
+
+                <div class="row mb8">
+                    <div class="col-6">
+                        <strong>Numéro demande: </strong><span t-esc="o.numero_demande"/>
+                    </div>
+                    <div class="col-6 text-right mb4">
+                        <strong>DATE: </strong><span t-field="o.date_demande" t-field-options='{"format": "dd/MM/yyyy"}'/>
+                    </div>
+                </div>
+
+            <br/><br/>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center" ><strong>N°</strong></th>
+                            <th class="text-center" ><strong>PRODUITS</strong></th>
+                            <th class="text-center" ><strong>STOCK INITIAL</strong></th>
+                            <th class="text-center" ><strong>STOCK DEMANDE</strong></th>
+                            <th class="text-center" ><strong>STOCK FINAL</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.appro_line_ids" t-as="appro_line">
+                            <td class="text-center">
+                                <span t-esc="appro_line_index + 1"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-esc="appro_line.product_id.name"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-esc="appro_line.stock_initial"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-esc="appro_line.quantite"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-esc="appro_line.stock_final"/>
+                            </td>
+                            
+                        </tr>
+                    </tbody>
+                </table>
+                <br/><br/><br/>
+                <div class="row">
+                    <div class="col-3"><strong>KHADIM</strong></div>
+                    <div class="col-3"><strong>NAYE</strong></div>
+                    <div class="col-3"><strong>COMPTABLE</strong></div>
+                    <div class="col-3"><strong>INTERESSE(E)</strong></div>
+                </div>
+                <div class="oe_structure" />
+            </div> 
+        </t>
+    </template>
+
+    <template id="report_demande_appro">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="mya_shop.report_demande_appro_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>
+    

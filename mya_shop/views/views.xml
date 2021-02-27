@@ -1,0 +1,1160 @@
+<odoo>
+  <data>
+
+    <record id="view_prestation_filter" model="ir.ui.view">
+        <field name="name">prestation.search</field>
+        <field name="model">prestation</field>
+        <field name="arch" type="xml">
+            <search string="Prestation">
+                <field name="category"/>
+                <field name="product"/>
+                <field name="client"/>
+                <field name="date"/>
+                <field name="fait_par"/>
+                <filter string="Aujourd'hui" name="today"
+                    domain="[('date', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:59:59')), ('date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter string="Cette Semaine" name="current_week"
+                    domain="[('date', '&lt;=', ((context_today()+relativedelta(weeks=0, weekday=-1)).strftime('%Y-%m-%d'))), ('date', '&gt;=', ((context_today()-relativedelta(weeks=1, weekday=0)).strftime('%Y-%m-%d')))]"/>
+                <filter string="Mois en cours" name="current_month" domain="[('date','&lt;',(context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01')), ('date','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
+                <filter string="Mois précédent" name="prev_month" domain="[('date','&gt;=',(context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),('date','&lt;',time.strftime('%%Y-%%m-01'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_category" context="{'group_by': 'category'}" string="Type de prestation"/>
+                    <filter name="groupby_client" context="{'group_by': 'client'}" string="Client"/>
+                    <filter name="groupby_product" context="{'group_by': 'product'}" string="Prestation"/>
+                    <filter name="groupby_fait_par" context="{'group_by': 'fait_par'}" string="Esthéticien"/>
+                    <filter name="groupby_date" context="{'group_by': 'date'}" string="regrouper par date"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+     <!--record model="ir.actions.act_window" id="all_prestation_action">
+      <field name="name">Prestations</field>
+      <field name="res_model">prestation</field>
+      <field name="view_mode">tree,form</field>
+    </record-->
+
+     <record model="ir.actions.act_window" id="prestation_action">
+      <field name="name">Toutes les prestations</field>
+      <field name="res_model">prestation</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{'search_default_today': 1}</field>
+      <field name="search_view_id" ref="view_prestation_filter"/>
+    </record>
+
+    <record model="ir.actions.act_window" id="sourcils_action">
+      <field name="name">Sourcils</field>
+      <field name="res_model">prestation</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('category.name','like','Sourcils')]</field>
+    </record>
+    <record model="ir.actions.act_window" id="cils_action">
+      <field name="name">Cils</field>
+      <field name="res_model">prestation</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('category.name','like','Cils')]</field>
+    </record>
+    <record model="ir.actions.act_window" id="soins_du_visage_action">
+      <field name="name">Soins du visage</field>
+      <field name="res_model">prestation</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('category.name','like','Soins du visage')]</field>
+    </record>
+    <record model="ir.actions.act_window" id="massage_action">
+      <field name="name">Massage</field>
+      <field name="res_model">prestation</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('category.name','like','Massage')]</field>
+    </record>
+    <record model="ir.actions.act_window" id="maquillage_action">
+      <field name="name">Maquillage</field>
+      <field name="res_model">prestation</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('category.name','like','Maquillage')]</field>
+    </record>
+    <record model="ir.actions.act_window" id="gommage_action">
+      <field name="name">Gommage</field>
+      <field name="res_model">prestation</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('category.name','like','Gommage')]</field>
+    </record>
+    <record model="ir.actions.act_window" id="laser_action">
+      <field name="name">Laser</field>
+      <field name="res_model">prestation</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('category.name','like','Laser')]</field>
+    </record>
+    <record model="ir.actions.act_window" id="onglerie_action">
+      <field name="name">Onglerie</field>
+      <field name="res_model">prestation</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('category.name','like','Onglerie')]</field>
+    </record>
+
+
+
+    <record id="product_category_form_view_inherited" model="ir.ui.view">
+            <field name="name">product.category.inherited</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='parent_id']" position="after">
+                    <field name="type_categ" />
+                </xpath>
+            </field>
+    </record>
+    <record id="versement_quotidien_view_form" model="ir.ui.view">
+        <field name="name">versement_quotidien.form</field>
+        <field name="model">versement_quotidien</field>
+        <field name="arch" type="xml">
+          <form>
+            <sheet>
+              <group col="2">
+                <group>
+                  <field name="date" />
+                  <field name="boutique_id"/>
+                  <field name="versement_banque"/>
+                  <field name="observations"/>
+                </group>
+                <group>
+                  <field name="montant_total_a_verser"/>
+                  <field name="total_depense"/>
+                  <field name="montant_total_verse"/>
+                  <field name="total_ecart"/>
+                </group>
+              </group>
+              <group col="2">
+                <group string="Cosmétique">
+                  <field name="montant_verse" string="Montant versé"/>
+                  <field name="montant_a_verser" string="Montant à verser"/>
+                  <field name="ecart"/>
+                  
+                  <field name="cosmetique_verse_par"/>
+                </group>
+                <group string="Esthetique">
+                  <field name="montant_a_verse_esthetique" string="Montant à verser"/>
+                  <field name="montant_verse_esthetique" string="Montant versé"/>
+                  <field name="ecart_esthetique"/>
+                  <field name="esthetique_verse_par"/>
+                </group>
+              </group>
+              <notebook>
+                <page string="Détails des ventes">
+                  <field name="detail_versements">
+                    <tree editable="bottom" create="false" delete="false">
+                      <field name="product_id"/>
+                      <field name="quantite" sum="Total"/>
+                      <field name="prix_unitaire"/>
+                      <field name="total" sum="Total"/>
+                      <field name="boutique_id" invisible="1"/>
+                      <field name="date" invisible="1"/>
+
+                    </tree>
+                  </field>
+                </page>
+                <page string="Détails des dépenses">
+                  <field name="detail_depense">
+                    <tree editable="bottom">
+                      <field name="motif"/>
+                      <field name="montant" sum="Total"/>
+                    </tree>
+                  </field>
+                </page>
+                <page string="Détails du stock">
+                  <button name="mettre_a_jour_stock" 
+                      type="object"
+                      string="Mettre à jour le stock"
+                      class="btn-primary"
+                    />
+                  <field name="detail_stock">
+                    <tree editable="bottom" create="false" delete="false">
+                      <field name="product_id"/>
+                      <field name="quantite_theorique" sum="Total"/>
+                      <field name="quantite_reelle" sum="Total"/>
+                      <field name="diff" sum="Total"/>
+                      <field name="boutique_id" invisible="1"/>
+                      <field name="date" invisible="1"/>
+                    </tree>
+                  </field>
+                </page>
+              </notebook>
+            </sheet>
+          </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="versement_quotidien_view_tree">
+      <field name="name">versement_quotidien.tree</field>
+      <field name="model">versement_quotidien</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="date"/>
+          <field name="boutique_id"/>
+          <field name="montant_total_verse" sum="Total"/>
+          <field name="montant_total_a_verser" sum="Total"/>
+          <field name="total_ecart" sum="Total"/>
+          <field name="versement_banque" sum="Total"/>
+
+        </tree>
+      </field>
+    </record>
+    <record id="view_versement_quotidien_filter" model="ir.ui.view">
+        <field name="name">versement_quotidien.search</field>
+        <field name="model">versement_quotidien</field>
+        <field name="arch" type="xml">
+            <search string="Versements quotidiens">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="boutique_id"/>
+
+                <filter string="Aujourd'hui" name="today"
+                    domain="[('date', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:59:59')), ('date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter string="Cette Semaine" name="current_week"
+                    domain="[('date', '&lt;=', ((context_today()+relativedelta(weeks=0, weekday=-1)).strftime('%Y-%m-%d'))), ('date', '&gt;=', ((context_today()-relativedelta(weeks=1, weekday=0)).strftime('%Y-%m-%d')))]"/>
+                <filter string="Mois en cours" name="current_month" domain="[('date','&lt;',(context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01')), ('date','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
+                <filter string="Mois précédent" name="prev_month" domain="[('date','&gt;=',(context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),('date','&lt;',time.strftime('%%Y-%%m-01'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_boutique" context="{'group_by': 'boutique_id'}" string="Boutique"/>
+                    <filter name="groupby_date" context="{'group_by': 'date'}" string="regrouper par date"/>
+                    <!--filter name="groupby_month" context="{'group_by': 'date:month'}" string="regrouper par mois"-->
+                </group>
+
+            </search>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="versement_quotidien_action">
+      <field name="name">Versement quotidien</field>
+      <field name="res_model">versement_quotidien</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{'search_default_today': 1}</field>
+      <field name="search_view_id" ref="view_versement_quotidien_filter"/>
+    </record>
+    <!--record id="rv_prestation_view_form" model="ir.ui.view">
+        <field name="name">rv.prestation.form</field>
+        <field name="model">rv.prestation</field>
+        <field name="arch" type="xml">
+          <form>
+            <header>
+              <button name="%(prestation_action)d" 
+                      type="action"
+                      string="Nouvelle prestation"
+                      class="btn-primary"
+                    />
+              
+            </header>
+            <sheet>
+              <group col="2">
+                <group>
+                  
+                  <field name="category"/>
+                  <field name="product" domain="[('categ_id','=',category)]"/>
+                </group>
+                <group>
+                  <field name="client"/>
+                  <field name="date"/>
+                  <field name="fait_par"/>
+                </group>
+              </group>
+            </sheet>
+          </form>
+        </field>
+    </record-->
+    <!--record model="ir.ui.view" id="rv_prestation_view_tree">
+      <field name="name">rv.prestation.tree</field>
+      <field name="model">rv.prestation</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="product"/>
+          <field name="type_prestation"/>
+          <field name="client"/>
+          <field name="date_heure"/>
+          <field name="date_rv"/>
+          <field name="heure_rv"/>
+        </tree>
+      </field>
+    </record-->
+
+    <record model="ir.ui.view" id="prestation_seance_view_tree">
+      <field name="name">seance.tree</field>
+      <field name="model">prestation.seance</field>
+      <field name="arch" type="xml">
+        <tree create="false">
+          <field name="numero"/>
+          <field name="prestation_id"/>
+          <field name="observations"/>
+          <field name="client"/>
+          <field name="date_rv"/>
+          <field name="heure_rv"/>
+          <button name="seance_faite" 
+                  type="object"
+                  string="Faite"
+                  class="btn-primary"
+                  attrs="{'invisible':[('state','=','faite')]}"
+                  />
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+
+    <!--record model="ir.actions.act_window" id="rv_prestation_action">
+      <field name="name">RV</field>
+      <field name="res_model">rv.prestation</field>
+      <field name="view_mode">tree,form</field>
+    </record-->
+
+    <record model="ir.actions.act_window" id="seance_action">
+      <field name="name">Séances</field>
+      <field name="res_model">prestation.seance</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="seance_a_faire_action">
+      <field name="name">Séances à faire</field>
+      <field name="res_model">prestation.seance</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('state','=','a_faire')]</field>
+    </record>
+    <record model="ir.actions.act_window" id="seance_faite_action">
+      <field name="name">Séances faites</field>
+      <field name="res_model">prestation.seance</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('state','=','faite')]</field>
+    </record>
+
+
+    <!--record model="ir.actions.act_window" id="type_prestation_action">
+      <field name="name">Types de prestation</field>
+      <field name="res_model">type.prestation</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="all_rv_prestation_action">
+      <field name="name">Tous les RV</field>
+      <field name="res_model">rv.prestation</field>
+      <field name="view_mode">tree,form</field>
+
+    </record-->
+
+    <record id="view_demande_appro_filter" model="ir.ui.view">
+        <field name="name">demande.appro.search</field>
+        <field name="model">demande.appro</field>
+        <field name="arch" type="xml">
+            <search string="Demande appro">
+                <field name="date_demande"/>
+                <field name="demandeur"/>
+                <filter string="Aujourd'hui" name="today"
+                    domain="[('date_demande', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:59:59')), ('date_demande', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter string="Cette Semaine" name="current_week"
+                    domain="[('date_demande', '&lt;=', ((context_today()+relativedelta(weeks=0, weekday=-1)).strftime('%Y-%m-%d'))), ('date_demande', '&gt;=', ((context_today()-relativedelta(weeks=1, weekday=0)).strftime('%Y-%m-%d')))]"/>
+                <filter string="Mois en cours" name="current_month" domain="[('date_demande','&lt;',(context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01')), ('date','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
+                <filter string="Mois précédent" name="prev_month" domain="[('date_demande','&gt;=',(context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),('date_demande','&lt;',time.strftime('%%Y-%%m-01'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_demandeur" context="{'group_by': 'demandeur'}" string="Demandeur"/>
+                    <filter name="groupby_date_demande" context="{'group_by': 'date_demande'}" string="regrouper par date"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="demande_appro_action">
+      <field name="name">Toutes les demandes d'appro</field>
+      <field name="res_model">demande.appro</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{'search_default_today': 1}</field>
+      <field name="search_view_id" ref="view_demande_appro_filter"/>
+    </record>
+      
+    <record model="ir.actions.act_window" id="mes_demande_appro_action">
+      <field name="name">Mes demandes d'appro</field>
+      <field name="res_model">demande.appro</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('demandeur.user_id','=',uid)]</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="demande_appro_encours_action">
+      <field name="name">Demandes d'appro en cours</field>
+      <field name="res_model">demande.appro</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('state','=','confirme')]</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="demande_appro_valide_action">
+      <field name="name">Demandes d'appro validées</field>
+      <field name="res_model">demande.appro</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('state','=','valide')]</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="demande_appro_annule_action">
+      <field name="name">Demandes d'appro annulées</field>
+      <field name="res_model">demande.appro</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('state','=','annule')]</field>
+    </record>
+
+    <record model="ir.ui.view" id="demande_appro_view_tree">
+      <field name="name">demande.appro.tree</field>
+      <field name="model">demande.appro</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="numero_demande"/>
+          <field name="date_demande"/>
+          <field name="demandeur"/>
+          <field name="state"/>
+          <field name="valide_par"/> 
+        </tree>
+      </field>
+    </record>
+
+    <record id="demande_appro_view_form" model="ir.ui.view">
+        <field name="name">demande.appro.form</field>
+        <field name="model">demande.appro</field>
+        <field name="arch" type="xml">
+          <form>
+            <header>
+              <button name="valider" 
+                      type="object"
+                      string="Valider"
+                      states="confirme"
+                      class="btn-primary"
+                      groups="mya_shop.group_appro_manager"
+                    />
+              <button name="annuler" 
+                      type="object"
+                      string="Annuler"
+                      states="confirme"
+                      class="btn-primary"
+                    />
+              <button name="confirmer" 
+                      type="object"
+                      string="Confirmer"
+                      states="draft"
+                      class="btn-primary"
+                    />
+              <button name="action_print_demande_appro" 
+                      type="object"
+                      string="Imprimer"
+                      class="btn-primary"
+                    />
+              <field name="state" widget="statusbar"/>
+            </header>
+            <sheet>
+              <group col="2">
+                <group>
+                  <field name="date_demande" attrs="{'readonly':[('state','=','valide')]}"/>
+                  <field name="location_grand_stock" invisible="1"/>
+                </group>
+                <group>
+                  <field name="demandeur" attrs="{'readonly':[('state','=','valide')]}"/>
+                  <field name="location_id" invisible="1"/>
+                </group>
+              </group>
+              <group>
+                    <field name="appro_line_ids" nolabel="1" attrs="{'readonly':[('state','=','valide')]}">
+                        <tree editable="bottom">
+                            <field name="product_id" string="PRODUITS"/>
+                            <field name="stock_initial" string="STOCK INITIAL"/>
+                            <field name="quantite" string="STOCK DEMANDE"/>
+                            <field name="stock_final" string="STOCK FINAL"/>
+                        </tree>
+                    </field>
+              </group>
+            </sheet>
+          </form>
+        </field>
+    </record>
+
+    <!--record id="view_order_form_inherited" model="ir.ui.view">
+            <field name="name">sale.order.inherited</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="before">
+                    <field name="prestation_id" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+    <record model="ir.actions.act_window" id="action_prestation_to_sale">
+        <field name="name">Sale</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">form,tree</field>
+        <field name="domain">[('prestation_id','=',active_id)]</field>
+        <field name="context">{"default_prestation_id":active_id}</field>
+    </record-->
+
+    <record model="ir.actions.act_window" id="action_prestation_to_invoice">
+        <field name="name">Invoice</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">form,tree</field>
+        <field name="domain">[('prestation_id','=',active_id)]</field>
+        <field name="context">{"default_prestation_id":active_id,"default_type":'out_invoice'}</field>
+    </record>
+
+    <record id="prestation_view_form" model="ir.ui.view">
+        <field name="name">prestation.form</field>
+        <field name="model">prestation</field>
+        <field name="arch" type="xml">
+          <form>
+            <header>
+                    <button name="%(action_prestation_to_invoice)d" 
+                      type="action"
+                      string="Facturation"
+                      class="btn-primary"
+                      attrs="{'invisible':[('state','=','facture')]}"
+                    />
+              <button name="action_print_convention" 
+                      type="object"
+                      string="Imprimer la convention"
+                      class="btn-primary"
+                      attrs="{'invisible':[('category_name','!=','Laser')]}"
+                    />
+                    <field name="state" widget="statusbar"/>
+            </header>
+            <sheet>
+              <div name="button_box" position="inside">
+                        <button class="oe_stat_button" type="object"
+                            name="return_action_to_open"
+                            icon="fa-calendar"
+                            context="{'xml_id': 'seance_action'}">
+                            <field string="Séances" name="seance_count" widget="statinfo"/>
+                        </button>
+                    </div>
+              <group col="2">
+                <group>
+                  <field name="numero_convention" invisible="1"/> 
+                  <field name="category" options="{'no_create': True, 'no_create_edit':True}"/>
+                  <field name="category_name" invisible="1"/>
+              
+                  <field name="product" domain="[('categ_id','=',category)]" options="{'no_create': True, 'no_create_edit':True}"/>
+                  <field name="client" />
+                  <field name="nombre_zones" attrs="{'invisible':[('category_name','!=','Laser')]}"/>
+                  <field name="maladies_a_signales" attrs="{'invisible':[('category_name','!=','Laser')]}"/>
+
+                  <field name="forfait" attrs="{'invisible':[('category_name','!=','Laser')]}"/>
+
+                  <field name="remarques" attrs="{'invisible':[('category_name','!=','Laser')]}"/>
+                </group>
+                <group>
+                  <field name="date_convention"/>
+                  <field name="fait_par" options="{'no_create': True, 'no_create_edit':True}"/>
+                  <field name="nbre_seances"/>
+                </group>
+              </group>
+              <group  col = "2" colspan ="2" string ="Les séances" attrs="{'invisible':[('nbre_seances','=',1)]}">
+                <field name="seances" nolabel="1" >
+                  <tree editable="bottom">
+                    <field name="numero"/>
+                    <field name="date_heure"/>
+                    <field name="observations"/>
+                    <field name="state"/>
+                    <field name="client" invisible="1"/>
+                  </tree>
+                </field>
+            </group>
+            </sheet>
+          </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="prestation_view_tree">
+      <field name="name">prestation.tree</field>
+      <field name="model">prestation</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="product"/>
+          <field name="category"/>
+          <field name="client"/>
+          <field name="fait_par"/>
+          <field name="date"/>
+        </tree>
+      </field>
+    </record>
+
+    <!--record id='prestation_view_search' model='ir.ui.view'>
+            <field name="name">prestation.search</field>
+            <field name="model">prestation</field>
+            <field name="arch" type="xml">
+                <search string="Prestations" >
+                    <field name="client" />
+                    <field name="product"/>
+                    <field name="category"/>
+                    <field name="fait_par"/>
+                </search>
+            </field>
+        </record-->
+
+   
+        <record id="view_partner_form_inherited" model="ir.ui.view">
+            <field name="name">res.partner.inherited</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field eval="18" name="priority"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='phone']" position="before">
+                      <field name="age"/>
+                      
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+    
+        <!--record id="mya_cosmetique_partner_kanban_view" model="ir.ui.view">
+            <field name="name">mya.cosmetique.res.partner.kanban.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+            <field name="priority" eval="10"/>
+            <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="arch" type="xml">
+                <field name="mobile" position="after">
+                    <field name="rv_count"/>
+                </field>
+                <xpath expr="//div[@class='oe_kanban_partner_links']" position="inside">
+                    <span class="badge" t-if="record.rv_count.value>0"><i class="fa fa-fw fa-calendar"/><t t-esc="record.rv_count.value"/></span>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_stock_picking_form_inherited" model="ir.ui.view">
+            <field name="name">stock.picking.inherited</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="before">
+                    <field name="demande_appro_id" invisible="1"/>
+                </xpath>
+            </field>
+        </record-->
+
+      <record model="ir.actions.act_window" id="transferts_stock_action">
+      <field name="name">Transfert de stock</field>
+      <field name="res_model">stock.picking</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('demande_appro_id.state','=','valide'),('state','=','draft')]</field>
+    </record>
+
+        <record id="view_employee_form_inherited" model="ir.ui.view">
+            <field name="name">hr.employee.inherited</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='work_location']" position="replace">
+                    <field name="boutique_id" />
+                </xpath>
+            </field>
+        </record>
+
+        <!--record id="view_stock_picking_form_inherited" model="ir.ui.view">
+            <field name="name">stock.picking.inherited</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="demande_appro_id" />
+                </xpath>
+            </field>
+        </record-->
+
+        <record id="view_move_form_inherited" model="ir.ui.view">
+            <field name="name">account.move.inherited</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="prestation_id" invisible="1" />
+                </xpath>
+            </field>
+        </record>
+
+    <record id="demande_retrait_produit_view_form" model="ir.ui.view">
+        <field name="name">demande.retrait_produit.form</field>
+        <field name="model">demande.retrait_produit</field>
+        <field name="arch" type="xml">
+          <form>
+            <header>
+              <button name="valider" 
+                      type="object"
+                      string="Valider"
+                      states="draft"
+                      class="btn-primary"
+                      groups="mya_shop.group_appro_manager"
+                    />
+                    <field name="state" widget="statusbar"/>
+            </header>
+            <sheet>
+              <group col="2">
+                <group>
+                  
+                  <field name="date" />
+                  <field name="demandeur"/>
+                </group>
+                <group>
+                  <field name="boutique_id"/>
+                  <field name="motif"/>
+                </group>
+              </group>
+              <notebook>
+                <page string="Produits à retirer">
+                  <field name="demande_lines">
+                    <tree editable="bottom">
+                      <field name="product_id"/>
+                      <field name="quantite"/>
+                    </tree>
+                  </field>
+                </page>
+              </notebook>
+            </sheet>
+          </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="demande_retrait_produit_view_tree">
+      <field name="name">demande.retrait_produit.tree</field>
+      <field name="model">demande.retrait_produit</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="date"/>
+          <field name="boutique_id"/>
+          <field name="demandeur"/>
+          <field name="motif"/>
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="demande_retrait_produit_filter" model="ir.ui.view">
+        <field name="name">demande.retrait_produit.search</field>
+        <field name="model">demande.retrait_produit</field>
+        <field name="arch" type="xml">
+            <search string="Demande de retrait produit">
+                <field name="motif"/>
+                <field name="demandeur"/>
+                <field name="date"/>
+                <field name="boutique_id"/>
+                <field name="state"/>
+
+                <filter string="Aujourd'hui" name="today"
+                    domain="[('date', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:59:59')), ('date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter string="Cette Semaine" name="current_week"
+                    domain="[('date', '&lt;=', ((context_today()+relativedelta(weeks=0, weekday=-1)).strftime('%Y-%m-%d'))), ('date', '&gt;=', ((context_today()-relativedelta(weeks=1, weekday=0)).strftime('%Y-%m-%d')))]"/>
+                <filter string="Mois en cours" name="current_month" domain="[('date','&lt;',(context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01')), ('date','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
+                <filter string="Mois précédent" name="prev_month" domain="[('date','&gt;=',(context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),('date','&lt;',time.strftime('%%Y-%%m-01'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_boutique" context="{'group_by': 'boutique_id'}" string="Boutique"/>
+                    <filter name="groupby_date" context="{'group_by': 'date'}" string="regrouper par date"/>
+                    <filter name="groupby_state" context="{'group_by': 'state'}" string="Etat"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="demande_retrait_produit_action">
+      <field name="name">Demande de retrait de produit</field>
+      <field name="res_model">demande.retrait_produit</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{'search_default_today': 1}</field>
+      <field name="search_view_id" ref="demande_retrait_produit_filter"/>
+    </record>
+      <record model="ir.actions.act_window" id="demande_retrait_produit_a_valider_action">
+      <field name="name">Demande retrait de produit à valider</field>
+      <field name="res_model">demande.retrait_produit</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('state','=','draft')]</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="demande_retrait_produit_valide_action">
+      <field name="name">Demande de retrait de produit validé</field>
+      <field name="res_model">demande.retrait_produit</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('state','=','valide')]</field>
+    </record>
+
+
+    <record id="view_detail_versement_filter" model="ir.ui.view">
+        <field name="name">detail_versement.search</field>
+        <field name="model">detail_versement</field>
+        <field name="arch" type="xml">
+            <search string="Ventes">
+                <field name="product_id"/>
+                <field name="boutique_id"/>
+                <field name="date"/>
+                <filter string="Aujourd'hui" name="today"
+                    domain="[('date', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:59:59')), ('date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter string="Cette Semaine" name="current_week"
+                    domain="[('date', '&lt;=', ((context_today()+relativedelta(weeks=0, weekday=-1)).strftime('%Y-%m-%d'))), ('date', '&gt;=', ((context_today()-relativedelta(weeks=1, weekday=0)).strftime('%Y-%m-%d')))]"/>
+                <filter string="Mois en cours" name="current_month" domain="[('date','&lt;',(context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01')), ('date','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
+                <filter string="Mois précédent" name="prev_month" domain="[('date','&gt;=',(context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),('date','&lt;',time.strftime('%%Y-%%m-01'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_boutique" context="{'group_by': 'boutique_id'}" string="Boutique"/>
+                    <filter name="groupby_product_id" context="{'group_by': 'product_id'}" string="Produit"/>
+                    <filter name="groupby_date" context="{'group_by': 'date'}" string="regrouper par date"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="vente_du_jour_action">
+      <field name="name">Ventes</field>
+      <field name="res_model">detail_versement</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{'search_default_today': 1}</field>
+      <field name="search_view_id" ref="view_detail_versement_filter"/>
+    </record>
+    <record id="detail_versement_view_form" model="ir.ui.view">
+        <field name="name">detail_versement.form</field>
+        <field name="model">detail_versement</field>
+        <field name="arch" type="xml">
+          <form>
+            <sheet>
+                <group>
+                  <field name="product_id" />
+                  <field name="quantite"/>
+                  <field name="prix_unitaire"/> 
+                  <field name="total"/>
+                </group>
+            </sheet>
+          </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="detail_versement_view_tree">
+      <field name="name">detail_versement.tree</field>
+      <field name="model">detail_versement</field>
+      <field name="arch" type="xml">
+        <tree editable="bottom" create="false" delete="false">
+          <field name="product_id"/>
+          <field name="quantite" sum="Total"/>
+          <field name="prix_unitaire"/>
+          <field name="total" sum="Total"/>
+          <field name="boutique_id"/>
+          <field name="date"/>
+        </tree>
+      </field>
+    </record>
+    <record id="view_detail_stock_filter" model="ir.ui.view">
+        <field name="name">detail_stock.search</field>
+        <field name="model">detail_stock</field>
+        <field name="arch" type="xml">
+            <search string="Detail stock">
+                <field name="product_id"/>
+                <field name="date"/>
+                <field name="boutique_id"/>
+
+                <filter string="Aujourd'hui" name="today"
+                    domain="[('date', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:59:59')), ('date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter string="Cette Semaine" name="current_week"
+                    domain="[('date', '&lt;=', ((context_today()+relativedelta(weeks=0, weekday=-1)).strftime('%Y-%m-%d'))), ('date', '&gt;=', ((context_today()-relativedelta(weeks=1, weekday=0)).strftime('%Y-%m-%d')))]"/>
+                <filter string="Mois en cours" name="current_month" domain="[('date','&lt;',(context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01')), ('date','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
+                <filter string="Mois précédent" name="prev_month" domain="[('date','&gt;=',(context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),('date','&lt;',time.strftime('%%Y-%%m-01'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_boutique" context="{'group_by': 'boutique_id'}" string="Boutique"/>
+                    <filter name="groupby_product_id" context="{'group_by': 'product_id'}" string="Produit"/>
+                    <filter name="groupby_date" context="{'group_by': 'date'}" string="regrouper par date"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="inventaire_du_jour_action">
+      <field name="name">Inventaires</field>
+      <field name="res_model">detail_stock</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{'search_default_today': 1}</field>
+      <field name="search_view_id" ref="view_detail_stock_filter"/>
+    </record>
+    <record id="detail_stock_view_form" model="ir.ui.view">
+        <field name="name">detail_stock.form</field>
+        <field name="model">detail_stock</field>
+        <field name="arch" type="xml">
+          <form>
+            <sheet>
+                <group>
+                  <field name="product_id" />
+                  <field name="quantite_theorique"/>
+                  <field name="quantite_reelle"/> 
+                  <field name="diff"/>
+                </group>
+            </sheet>
+          </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="detail_stock_view_tree">
+      <field name="name">detail_stock.tree</field>
+      <field name="model">detail_stock</field>
+      <field name="arch" type="xml">
+        <tree editable="bottom" create="false" delete="false">
+          <field name="boutique_id"/>
+          <field name="date"/>
+          <field name="product_id"/>
+          <field name="quantite_theorique" sum="Total"/>
+          <field name="quantite_reelle" sum="Total"/>
+          <field name="diff" sum="Total"/>
+        </tree>
+      </field>
+    </record>
+    <record model="ir.actions.act_window" id="depense_du_jour_action">
+      <field name="name">Dépenses</field>
+      <field name="res_model">detail_depense</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    <record id="detail_depense_view_form" model="ir.ui.view">
+        <field name="name">detail_depense.form</field>
+        <field name="model">detail_depense</field>
+        <field name="arch" type="xml">
+          <form>
+            <sheet>
+                <group>
+                  <field name="motif" />
+                  <field name="montant"/>
+                </group>
+            </sheet>
+          </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="detail_depense_view_tree">
+      <field name="name">detail_depense.tree</field>
+      <field name="model">detail_depense</field>
+      <field name="arch" type="xml">
+        <tree editable="bottom" create="false" delete="false">
+          <field name="motif"/>
+          <field name="montant" sum="Total"/>
+        </tree>
+      </field>
+    </record>
+
+    <menuitem name="Approvisionnement" 
+              id="menu_appro"
+              groups="group_appro_user,group_appro_manager"
+              web_icon="mya_shop,static/description/appro.png"
+              />
+    <menuitem name="Demande d'approvisionnement" 
+              id="menu_demande_appro"
+              parent="menu_appro" 
+              sequence="1"
+              groups="group_appro_user,group_appro_manager"
+              /> 
+    <menuitem name="Toutes les demandes" 
+              id="menu_liste_demande_appro"
+              parent="menu_demande_appro" 
+              action="demande_appro_action"
+              sequence="1"
+              groups="group_appro_manager"
+              />
+
+    <menuitem name="Mes demandes" 
+              id="menu_mes_demande_appro"
+              parent="menu_demande_appro" 
+              action="mes_demande_appro_action"
+              sequence="2"
+              groups="group_appro_user,group_appro_manager"
+              
+              />
+    <menuitem name="Demandes en cours" 
+              id="menu_demandes_encours"
+              parent="menu_demande_appro" 
+              action="demande_appro_encours_action"
+              sequence="3"
+              groups="group_appro_manager"
+              />
+
+    <menuitem name="Demandes validées" 
+              id="menu_demandes_validees"
+              parent="menu_demande_appro" 
+              action="demande_appro_valide_action"
+              sequence="4"
+              groups="group_appro_manager"
+              />
+
+    <menuitem name="Demandes annulées" 
+              id="menu_demandes_annulees"
+              parent="menu_demande_appro" 
+              action="demande_appro_annule_action"
+              sequence="5"
+              groups="group_appro_manager"
+              />
+
+     <menuitem name="Transferts à valider" 
+              id="menu_transferts_a_valider"
+              parent="menu_demande_appro" 
+              action="transferts_stock_action"
+              sequence="6"
+              groups="stock.group_stock_manager"
+              />
+
+     <!--menuitem name="Type de prestation" 
+              id="menu_type_presation"
+              parent="sales_team.menu_sale_config" 
+              action="type_prestation_action"
+              sequence="4"
+              groups="sales_team.group_sale_salesman,sales_team.group_sale_manager,group_esthetique_user"
+              /-->
+    
+    <menuitem name="Esthetique" 
+              id="menu_esthetique"
+              groups="group_esthetique_user"
+              web_icon="mya_shop,static/description/esthetique.png"
+              />
+    <menuitem name="Esthetique" 
+              id="menu_prestation"
+              parent="menu_esthetique"
+              groups="group_esthetique_user"
+              />
+    <menuitem name="Liste des prestations" 
+              id="menu_liste_prestations"
+              parent="menu_prestation"
+              action="prestation_action"
+              groups="group_esthetique_user"
+              sequence="5"
+              />
+
+    <menuitem name="Sourcils" 
+              id="menu_sourcils"
+              action="sourcils_action"
+              parent="menu_prestation"
+              groups="group_esthetique_user"
+              sequence="10"
+              />
+    <menuitem name="Cils" 
+              id="menu_cils"
+              action="cils_action"
+              parent="menu_prestation"
+              groups="group_esthetique_user"
+              sequence="20"
+              />
+    <menuitem name="Soins du visage" 
+              id="menu_soins_du_visage"
+              action="soins_du_visage_action"
+              parent="menu_prestation"
+              groups="group_esthetique_user"
+              sequence="30"
+              />
+    <menuitem name="Massage" 
+              id="menu_massage"
+              action="massage_action"
+              parent="menu_prestation"
+              groups="group_esthetique_user"
+              sequence="40"
+              />
+    <menuitem name="Maquillage" 
+              id="menu_maquillage"
+              action="maquillage_action"
+              parent="menu_prestation"
+              groups="group_esthetique_user"
+              sequence="40"
+              />
+    <menuitem name="Gommage" 
+              id="menu_gommage"
+              action="gommage_action"
+              parent="menu_prestation"
+              groups="group_esthetique_user"
+              sequence="50"
+              />
+    <menuitem name="Onglerie"
+              id="menu_onglerie"
+              action="onglerie_action"
+              parent="menu_prestation"
+              groups="group_esthetique_user"
+              sequence="60"
+              />
+    <menuitem name="Laser" 
+              id="menu_laser"
+              parent="menu_prestation"
+              groups="group_esthetique_user"
+              sequence="70"
+              />
+    <menuitem name="Prestations" 
+              id="menu_prestation_laser"
+              parent="menu_laser"
+              action="laser_action"
+              groups="group_esthetique_user"
+              sequence="1"
+              />
+    <menuitem name="Séances" 
+              id="all_seances"
+              parent="menu_laser"
+              action="seance_action"
+              sequence="2"
+              groups="group_esthetique_user"
+              />
+    <menuitem name="Séances à faire" 
+              id="list_seance_a_faire"
+              parent="menu_laser"
+              action="seance_a_faire_action"
+              sequence="3"
+              groups="group_esthetique_user"
+              />
+    <menuitem name="Séances faites" 
+              id="list_seance_faite"
+              parent="menu_laser"
+              action="seance_faite_action"
+              sequence="4"
+              groups="group_esthetique_user"
+              />
+
+    <menuitem name="Point du jour" 
+              id="menu_versements"
+              groups="mya_shop.group_compta_user"
+              web_icon="mya_shop,static/description/Point-du-jour.png"
+              />
+
+    <menuitem name="Versements quotidiens" 
+              id="menu_versements_quotidiens"
+              parent="menu_versements"
+              action="versement_quotidien_action"
+              groups="mya_shop.group_compta_user"
+              sequence="1"
+              />
+    <menuitem name="Ventes" 
+              id="menu_ventes_du_jour"
+              parent="menu_versements"
+              action="vente_du_jour_action"
+              groups="mya_shop.group_compta_user"
+              sequence="2"
+              />
+    <menuitem name="Inventaires" 
+              id="menu_inventaires_du_jour"
+              parent="menu_versements"
+              action="inventaire_du_jour_action"
+              groups="mya_shop.group_compta_user"
+              sequence="3"
+              />
+    <menuitem name="Dépenses" 
+              id="menu_depenses_du_jour"
+              parent="menu_versements"
+              action="depense_du_jour_action"
+              groups="mya_shop.group_compta_user"
+              sequence="4"
+              />
+
+<menuitem name="Retrait de produits" 
+              id="menu_retrait_produit"
+              parent="menu_appro" 
+              sequence="20"
+              groups="mya_shop.group_appro_user,mya_shop.group_appro_manager"
+              />
+<menuitem name="Demandes" 
+              id="menu_demande_retrait_produits"
+              parent="menu_retrait_produit" 
+              action="demande_retrait_produit_action"
+              sequence="1"
+              groups="mya_shop.group_appro_user,mya_shop.group_appro_manager"
+              />
+<menuitem name="Demandes à valider" 
+              id="menu_retrait_produit_a_valider"
+              parent="menu_retrait_produit" 
+              action="demande_retrait_produit_a_valider_action"
+              sequence="2"
+              groups="stock.group_stock_manager"
+              />
+<menuitem name="Demandes validées" 
+              id="menu_retrait_produit_a_valider"
+              parent="menu_retrait_produit" 
+              action="demande_retrait_produit_valide_action"
+              sequence="3"
+              groups="stock.group_stock_manager"
+              />
+  </data>
+</odoo>

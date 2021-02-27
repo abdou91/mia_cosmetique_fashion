@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="sourcils" model="product.category">
+            <field name="name">Sourcils</field>
+            <field name="type_categ">prestation</field>
+        </record>
+        <record id="cils" model="product.category">
+            <field name="name">Cils</field>
+            <field name="type_categ">prestation</field>
+        </record>
+        <record id="soin_du_visage" model="product.category">
+            <field name="name">Soins du visage</field>
+            <field name="type_categ">prestation</field>
+        </record>
+
+        <record id="massage" model="product.category">
+            <field name="name">Massage</field>
+            <field name="type_categ">prestation</field>
+        </record>
+        <record id="maquillage" model="product.category">
+            <field name="name">Maquillage</field>
+            <field name="type_categ">prestation</field>
+        </record>
+        <record id="gommage" model="product.category">
+            <field name="name">Gommage</field>
+            <field name="type_categ">prestation</field>
+        </record>
+        <record id="laser" model="product.category">
+            <field name="name">Laser</field>
+            <field name="type_categ">prestation</field>
+        </record>
+        <record id="onglerie" model="product.category">
+            <field name="name">Onglerie</field>
+            <field name="type_categ">prestation</field>
+        </record>
+    </data>
+</odoo>
+

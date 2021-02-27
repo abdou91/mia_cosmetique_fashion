@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+    <record id="email_template_demande_appro" model="mail.template">
+        <field name="name">Demande d'appro - Send by Email</field>
+        <field name="email_from">abdoumbarly@gmail.com</field>
+        <field name="email_to">fatoukbgueye@gmail.com,abdou.ly@fongip.sn</field>
+        <field name="subject">Demande appro</field>
+        <field name="model_id" ref="mya_shop.model_demande_appro"/>
+        <field name="auto_delete" eval="True"/>
+        <field name="report_template" ref="mya_report_demande_appro"/>
+        <field name="report_name">Demande appro</field>
+        <field name="body_html"><![CDATA[
+
+<p>Bonjour</p>
+<p>Veuillez trouver ci-joint une nouvelle demande d'appro faite par ${object.demandeur.name} de la ${object.demandeur.boutique_id.name}.</p>
+]]></field>
+</record>
+    </data>
+</odoo>
