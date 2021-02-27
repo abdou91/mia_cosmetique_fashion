@@ -72,14 +72,14 @@ class Versement_quotidien(models.Model):
 	_description = 'versement quotidien'
 	name = fields.Char(string = "référence")
 	date = fields.Date(string = "Date",default=fields.Date.context_today,required = True)
-	cosmetique_verse_par = fields.Many2one('hr.employee',string = "Versé par")#employee_id
+	cosmetique_verse_par = fields.Many2one('hr.employee',string = "Versé par : ")#employee_id
 	esthetique_verse_par = fields.Many2one('hr.employee',string = "Versé par")
 	montant_a_verser = fields.Integer(string = "Montant à verser Cosmetique",compute='_compute_montant_a_verser',store=True)
 	montant_verse = fields.Integer(string = "Montant versé Cosmetique")
 	total_depense = fields.Integer(string = "Total dépense",compute='_compute_total_depense',store=True)
 	boutique_id = fields.Many2one('pos.config',string="Boutique",required = True)
-	ecart = fields.Integer(string = "Ecart",compute="_compute_ecart",store=True)
-	ecart_esthetique = fields.Integer(string = "Ecart",compute="_compute_ecart_esthetique",store=True)
+	ecart = fields.Integer(string = "Ecart cosmétique",compute="_compute_ecart",store=True)
+	ecart_esthetique = fields.Integer(string = "Ecart esthétique",compute="_compute_ecart_esthetique",store=True)
 	versement_banque = fields.Integer(string = "Versement banque")
 	detail_versements = fields.One2many('detail_versement','versement_quotidien_id',string = "Détails")
 	detail_stock = fields.One2many('detail_stock','versement_quotidien_id',string = "Détails stock")
@@ -249,7 +249,7 @@ class Prestation(models.Model):
 	maladies_a_signales = fields.Text(string="Maladie à signaler")
 	remarques = fields.Text(string="Remarques ou commentaires")
 	numero_convention = fields.Char(string="N° convention")
-	date_convention = fields.Date(string = "Date",default=fields.Date.context_today)
+	date_convention = fields.Date(string = "Date de la convention",default=fields.Date.context_today)
 	nombre_zones = fields.Integer(string = "Nombre de zones",default=1)
 	forfait = fields.Integer(string = "FORFAIT")#,compute='_compute_forfait',store=True
 	seances = fields.One2many('prestation.seance','prestation_id',string = "Séances")
@@ -510,7 +510,7 @@ class StockPicking(models.Model):
 
 class DemandeAppro(models.Model):#object stock.picking 
 	_name = 'demande.appro'
-	_descriptor = 'Demande appro'
+	_description = 'Demande appro'
 	_rec_name = 'numero_demande'
 
 	numero_demande = fields.Char(string="N°")
