@@ -617,7 +617,7 @@
                     <span class="badge" t-if="record.rv_count.value>0"><i class="fa fa-fw fa-calendar"/><t t-esc="record.rv_count.value"/></span>
                 </xpath>
             </field>
-        </record>
+        </record-->
 
         <record id="view_stock_picking_form_inherited" model="ir.ui.view">
             <field name="name">stock.picking.inherited</field>
@@ -625,16 +625,16 @@
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="before">
-                    <field name="demande_appro_id" invisible="1"/>
+                    <field name="demande_appro_id" /> <!-- invisible="1" -->
                 </xpath>
             </field>
-        </record-->
+        </record>
 
       <record model="ir.actions.act_window" id="transferts_stock_action">
       <field name="name">Transfert de stock</field>
       <field name="res_model">stock.picking</field>
       <field name="view_mode">tree,form</field>
-      <field name="domain">[('demande_appro_id.state','=','valide'),('state','=','draft')]</field>
+      <field name="domain">[('demande_appro_id.state','=','valide'),('state','=','assigned')]</field>
     </record>
 
         <record id="view_employee_form_inherited" model="ir.ui.view">

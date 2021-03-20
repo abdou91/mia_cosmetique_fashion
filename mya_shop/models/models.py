@@ -401,11 +401,13 @@ class AccountInvoice(models.Model):
 		if not self.prestation_id:
 			return 
 		partner = self.prestation_id.client
+		#self.prestation_id.write({'state':'facture'})
 		self.partner_id = partner.id
 		invoice_lines = []
 		invoice_lines.append((0,0,{
 					'name': self.prestation_id.product.name,
 					'product_id':self.prestation_id.product.id,
+					'account_id':self.journal_id.default_debit_account_id.id,
 					#'product_uom':self.prestation_id.product.uom_id,
 					'quantity':1.0,
 					'price_unit':self.prestation_id.product.lst_price,
@@ -415,7 +417,7 @@ class AccountInvoice(models.Model):
 	@api.model
 	def create(self,data):
 		if 'prestation_id' in data:
-			prestation = self.env['prestation'].search([('id','=',data['prestation_id'])],limit=1)
+			prestation = self.env['prestation'].browse(data['prestation_id'])
 			if prestation:
 				prestation.write({'state':'facture'})
 		return super(AccountInvoice,self).create(data)
